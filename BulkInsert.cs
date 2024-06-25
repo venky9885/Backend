@@ -51,13 +51,13 @@ public async Task BulkCopyInsert()
 
 
 /* Create a table type. */
-CREATE TYPE SampleTableType 
+/*CREATE TYPE SampleTableType 
    AS TABLE
       ( [id] UNIQUEIDENTIFIER
       , [Description] NVARCHAR(50) );
-GO
+GO*/
 /* Create a procedure to receive data for the table-valued parameter. */
-CREATE PROCEDURE dbo. usp_SampleTableInsert
+/*CREATE PROCEDURE dbo. usp_SampleTableInsert
    @TVP SampleTableType READONLY
       AS
       SET NOCOUNT ON
@@ -65,3 +65,20 @@ CREATE PROCEDURE dbo. usp_SampleTableInsert
       SELECT *
       FROM @TVP;
 GO
+*/
+    public async Task BulkInsertTable() {
+
+        var table = new DataTable();
+        table.Columns.Add("id", typeof(System.Guid));
+        table.Columns.Add("Description", typeof(string));
+
+        for (int i = 0; i < this.NumberOfRow; i++)
+        {
+            table.Rows.Add(System.Guid.NewGuid(), $"Test Desc {i}");
+        }
+
+        using var connection = new SqlConnection(ConnectionString);
+
+        await connection.ExecuteAsync("usp_SampleTableInsert", new { TVP = table.AsTableValuedParameter("SampleTableType") }, commandType: CommandType.StoredProcedure);
+
+    }
