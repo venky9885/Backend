@@ -1,4 +1,5 @@
-        private async Task BulkInsertClassificationIntoTemp(SqlConnection con, IList<Core.Employee> employees)
+       // Enterprise example
+ private async Task BulkInsertClassificationIntoTemp(SqlConnection con, IList<Core.Employee> employees)
         {
             try
             {
@@ -67,3 +68,59 @@
             }
 
         }
+
+// chatgpt example
+
+using System;
+using System.Data;
+using System.Data.SqlClient;
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        // Create a DataTable and define its schema
+        DataTable dataTable = new DataTable();
+        dataTable.Columns.Add("Id", typeof(int));
+        dataTable.Columns.Add("Name", typeof(string));
+        dataTable.Columns.Add("Age", typeof(int));
+
+        // Populate the DataTable with some sample data
+        dataTable.Rows.Add(1, "John Doe", 30);
+        dataTable.Rows.Add(2, "Jane Smith", 25);
+        dataTable.Rows.Add(3, "Sam Brown", 35);
+
+        // Define the SQL Server connection string
+        string connectionString = "your_connection_string_here";
+
+        // Perform the bulk copy operation
+        using (SqlConnection connection = new SqlConnection(connectionString))
+        {
+            connection.Open();
+
+            using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection))
+            {
+                // Set the destination table name
+                bulkCopy.DestinationTableName = "dbo.YourDestinationTable";
+
+                try
+                {
+                    // Map the columns from the source DataTable to the destination table
+                    bulkCopy.ColumnMappings.Add("Id", "Id");
+                    bulkCopy.ColumnMappings.Add("Name", "Name");
+                    bulkCopy.ColumnMappings.Add("Age", "Age");
+
+                    // Perform the bulk copy
+                    bulkCopy.WriteToServer(dataTable);
+
+                    Console.WriteLine("Bulk copy operation completed successfully.");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error during bulk copy: " + ex.Message);
+                }
+            }
+        }
+    }
+}
+
