@@ -82,3 +82,10 @@ GO
         await connection.ExecuteAsync("usp_SampleTableInsert", new { TVP = table.AsTableValuedParameter("SampleTableType") }, commandType: CommandType.StoredProcedure);
 
     }
+
+
+
+// Conclusion
+// Dapper Bulk Insert: Simple and suitable for small to medium-sized datasets. Easy to use but may not be optimal for large volumes of data.
+// Bulk Copy: Highly efficient for large datasets. Best for high-performance bulk inserts with minimal overhead.
+// Table-Value Parameters: Combines flexibility and efficiency. Suitable for large datasets and complex operations.
